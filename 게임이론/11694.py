@@ -15,18 +15,13 @@ if flag:
     print("koosaga") if one % 2 == 0 else print("cubelover")
     exit(0)
 
-if one % 2 == 1:
-    if grundy_num == 0:
-        print("cubelover")
-    else:
-        print("koosaga")
-elif one == 0:
-    if grundy_num == 0:
+if one % 2 == 0:
+    if grundy_num != 0:
         print("cubelover")
     else:
         print("koosaga")
 else:
-    if grundy_num != 0:
+    if grundy_num == 0:
         print("cubelover")
     else:
         print("koosaga")

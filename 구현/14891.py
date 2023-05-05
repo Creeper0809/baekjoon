@@ -1,20 +1,14 @@
-from collections import deque
-arr = [""] + [deque(map(int, input())) for _ in range(4)]
-
-def recu(num, dir, already):
-    if num in already:
+from collections import deque;b=[deque(map(int,input()))for _ in range(4)]
+def r(n,m,a):
+    if n in a:
         return
-    already.append(num)
-    if num + 1 < 5:
-        if arr[num][2] != arr[num + 1][6]:
-            recu(num + 1, -dir, already)
-    if num - 1 > 0:
-        if arr[num][6] != arr[num - 1][2]:
-            recu(num - 1, -dir, already)
-    arr[num].rotate(dir)
-
+    a.append(n)
+    if n+1<4 and b[n][2]!=b[n+1][6]:
+        r(n+1,-m,a)
+    if n-1>-1 and b[n][6]!=b[n-1][2]:
+        r(n-1,-m, a)
+    b[n].rotate(m)
 for _ in range(int(input())):
-    num, dir = map(int, input().split())
-    recu(num, dir, list())
-
-print(sum([arr[i][0] * (2**(i-1)) for i in range(1,5)]))
+    n,m=map(int,input().split())
+    r(n-1,m,[])
+print(sum([b[i][0]*2**i for i in range(4)]))
