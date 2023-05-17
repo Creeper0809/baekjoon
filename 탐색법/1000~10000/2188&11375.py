@@ -1,3 +1,6 @@
+import sys
+
+input = sys.stdin.readline
 N,M = map(int,input().split())
 adj = {}
 for i in range(1,N+1):
