@@ -1,32 +1,24 @@
-def find_closest_sum(n, m, numbers):
-    numbers.append(0)
-    numbers.sort()
-    closest_sum = float('-inf')
-    n += 1
-    for i in range(n):
-        for j in range(n):
-            left = 0
-            right = n - 1
+def fibonacci_dp(n):
+    if n == 0: return []
+    elif n == 1: return [1]
+    fib = [0] * (n + 1)
+    fib[1], fib[2] = 1, 1
+    for i in range(3, n + 1):
+        fib[i] = fib[i-1] + fib[i-2]
+    return fib[1:]
 
-            while left < right:
-                current_sum = numbers[i] + numbers[j] + numbers[left] + numbers[right]
+def fibonacci_fibonacci_sequence(n):
+    fib_seq = fibonacci_dp(n)
+    fib_fib_seq = []
+    for i in fib_seq:
+        fib_fib_seq.extend([i] * i)
+    return fib_fib_seq
 
-                if current_sum == m:
-                    return m
+def sum_of_fibonacci_fibonacci_sequence(a, b):
+    n = 30  # n값 높게 설정가능하나 시간 오래걸림
+    fib_fib_seq = fibonacci_fibonacci_sequence(n)
+    return sum(fib_fib_seq[a-1:b])
 
-                if current_sum > closest_sum and current_sum < m:
-                    closest_sum = current_sum
+a, b = map(int, input().split())
 
-                if current_sum < m:
-                    left += 1
-                else:
-                    right -= 1
-
-    return closest_sum
-
-
-n, m = map(int, input().split())
-numbers = list(map(int, input().split()))
-
-result = find_closest_sum(n, m, numbers)
-print(result)
+print(sum_of_fibonacci_fibonacci_sequence(a, b))
