@@ -3,12 +3,6 @@ from collections import deque
 
 size = 60
 
-
-def bfs(flow, capacity, source):
-
-    return parent
-
-
 def maxFlow(capacity, source, sink):
     flow = [[0] * size for _ in range(size)]
     total_flow = 0
