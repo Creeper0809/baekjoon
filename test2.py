@@ -1,34 +1,65 @@
-n = int(input())
-dp = [[[-1 for _ in range(n)] for _ in range(n)] for _ in range(n)]
-voters = [list(map(int,input().split())) for _ in range(n)]
-def dfs(x1, y1, x2,y2,dp):
+import struct
 
-    # 위치가 격자 밖이면 0 반환
-    if x1 >= n or y1 >= n or x2 >= n or y2 >= n:
-        return 0
+def F(x, y, z): return (x & y) | (~x & z)
+def G(x, y, z): return (x & z) | (y & ~z)
+def H(x, y, z): return x ^ y ^ z
+def I(x, y, z): return y ^ (x | ~z)
 
-    # 두 사람이 모두 (n,n)에 도착한 경우, 유권자 수 반환
-    if x1 == n - 1 and y1 == n - 1:
-        return voters[x1][y1]
+def left_rotate(x, n):
+    x &= 0xFFFFFFFF
+    return ((x << n) | (x >> (32 - n))) & 0xFFFFFFFF
 
-    # 현재 상태가 이미 방문한 상태라면 메모이제이션 테이블에서 해당 값을 반환
-    if dp[x1][y1][x2] != -1:
-        return dp[x1][y1][x2]
+S = [7, 12, 17, 22]*4 + [5, 9, 14, 20]*4 + [4, 11, 16, 23]*4 + [6, 10, 15, 21]*4
+K = [int(abs(__import__('math').sin(i + 1)) * 2**32) & 0xFFFFFFFF for i in range(64)]
 
-    # 현재 상태의 최대 유권자 수 초기화
-    ans = 0
-    # 두 사람이 모두 오른쪽으로 이동
-    ans = max(ans, dfs(x1 + 1, y1, x2 + 1,y2,dp))
-    # 첫 번째 사람은 오른쪽으로, 두 번째 사람은 아래쪽으로 이동
-    ans = max(ans, dfs(x1 + 1, y1, x2,y2+1,dp))
-    # 첫 번째 사람은 아래쪽으로, 두 번째 사람은 오른쪽으로 이동
-    ans = max(ans, dfs(x1, y1 + 1, x2 + 1,y2,dp))
-    # 두 사람이 모두 아래쪽으로 이동
-    ans = max(ans, dfs(x1, y1 + 1, x2,y2+1,dp))
-    # 메모이제이션 테이블을 현재 상태의 최대 유권자 수로 업데이트
-    dp[x1][y1][x2] = ans + voters[x1][y1] + (x1 != x2) * voters[x2][y2]
-    return dp[x1][y1][x2]
+def index(i):
+    if 0 <= i < 16: return i
+    elif 16 <= i < 32: return (5 * i + 1) % 16
+    elif 32 <= i < 48: return (3 * i + 5) % 16
+    else: return (7 * i) % 16
 
+def md5_padding(msg_len_bytes):
+    pad = b'\x80'
+    while (msg_len_bytes + len(pad)) % 64 != 56:
+        pad += b'\x00'
+    bit_len = msg_len_bytes * 8
+    pad += struct.pack('<Q', bit_len)
+    return pad
 
-print(dfs(0, 0, 0,0,dp))  # 출력: 103
-print(dp)
+def md5_from_state(state_bytes, count_bytes, new_data):
+    a, b, c, d = struct.unpack("<4I", state_bytes)
+    message = new_data + md5_padding(count_bytes + len(new_data))
+    for i in range(0, len(message), 64):
+        M = list(struct.unpack("<16I", message[i:i+64]))
+        A, B, C, D = a, b, c, d
+        for j in range(64):
+            if j < 16: f = F(B, C, D)
+            elif j < 32: f = G(B, C, D)
+            elif j < 48: f = H(B, C, D)
+            else: f = I(B, C, D)
+            f = (f + A + K[j] + M[index(j)]) & 0xFFFFFFFF
+            A, B, C, D = D, (B + left_rotate(f, S[j])) & 0xFFFFFFFF, B, C
+        a = (a + A) & 0xFFFFFFFF
+        b = (b + B) & 0xFFFFFFFF
+        c = (c + C) & 0xFFFFFFFF
+        d = (d + D) & 0xFFFFFFFF
+    return struct.pack("<4I", a, b, c, d).hex()
+
+original_message = b"Dreamhack"
+new_data = b"a"
+secret_len = 500
+
+key = b"A"*secret_len
+original_hash = "764e0c568ca4c990802290cb3fd05f93"
+
+state_bytes = bytes.fromhex(original_hash)
+
+padding = md5_padding(secret_len + len(original_message))
+forged_message = original_message + padding + new_data
+forged_hash = md5_from_state(state_bytes, secret_len + len(original_message) + len(padding), new_data)
+
+forged_message_hex = forged_message.hex()
+forged_hash_hex = forged_hash
+
+print(forged_message_hex)
+print(forged_hash_hex)

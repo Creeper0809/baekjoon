@@ -87,7 +87,7 @@ for i in range(N - 1, -1, -1):
         answer += (str(Tanks[i].tanknum) + " D\n") * (i - Tanks[i].x)
         totalMove += i - Tanks[i].x
         Tanks[i].x = i
-Tanks.sort(key=lambda _: _.r)
+Tanks.sort(key=lambda _: _.query_r)
 for i in range(N):
     if Tanks[i].y > i:
         answer += (str(Tanks[i].tanknum) + " L\n") * (Tanks[i].y - i)

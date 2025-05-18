@@ -1,23 +1,6 @@
-import sys
-input = sys.stdin.readline
+from Crypto.Cipher import AES
 
-def count_palindromes(s):
-    T = ['^']
-    for ch in s:
-        T += ['#', ch]
-    T += ['#', '$']
-    N = len(T)
-    P = [0] * N
-    center = right = 0
-    for i in range(1, N - 1):
-        mirror = 2*center - i
-        if i < right:
-            P[i] = min(right - i, P[mirror])
-        while T[i + (1 + P[i])] == T[i - (1 + P[i])]:
-            P[i] += 1
-        if i + P[i] > right:
-            center, right = i, i + P[i]
-    return sum(p // 2 for p in P)
-
-s = input().rstrip()
-print(count_palindromes(s) + len(s))
+C1 = bytes.fromhex("1cdb44d4f72624855ce2255dc2081ea0")  # 예시
+cipher = AES.new(b'\x00' * 16, AES.MODE_ECB)  # 더미 키로 ECB 복호화 객체 생성
+key = cipher.decrypt(C1[:16])
+print("Recovered key / IV:", key.hex())
