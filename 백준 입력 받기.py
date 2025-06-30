@@ -19,3 +19,4 @@ arr = [input() for _ in range(i)]
 arr = [list(map(int,input())) for _ in range(n)]
 #띄어쓰기로 구분 O
 arr = [list(map(int,input().split())) for _ in range(n)]
+
