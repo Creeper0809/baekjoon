@@ -43,13 +43,13 @@ def build():
     while q:
         cur = q.popleft()
         for i in range(26):
-            nxt = cur.children[i]
+            nxt = cur.ch[i]
             if nxt:
-                nxt.fail = cur.fail.children[i]
+                nxt.fail = cur.fail.ch[i]
                 nxt.output += nxt.fail.output
                 q.append(nxt)
             else:
-                cur.children[i] = cur.fail.children[i]
+                cur.ch[i] = cur.fail.ch[i]
 
 build()
 

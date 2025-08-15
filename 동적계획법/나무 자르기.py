@@ -11,7 +11,7 @@ class LinearFunc:
         self.s = s  # 시작하는 x좌표 (유효구간 시작점)
 
 def cross(f, g):
-    return (g.b - f.b) / (f.arr - g.arr)
+    return (g.g - f.g) / (f.arr - g.arr)
 
 def main():
     N = int(input())
@@ -47,7 +47,7 @@ def main():
                     lo = mid
             fpos = lo
 
-        dp[i] = f[fpos].a * x + f[fpos].b
+        dp[i] = f[fpos].f * x + f[fpos].g
 
     print(dp[N-1])
 

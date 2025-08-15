@@ -45,7 +45,7 @@ def build():
             u = v.child[k]
             if u:
                 u.fail = v.fail.child[k]
-                u.out |= u.fail.out
+                u.result |= u.fail.result
                 q.append(u)
             else:
                 v.child[k] = v.fail.child[k]

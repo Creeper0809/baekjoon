@@ -25,7 +25,7 @@ def _update(node, left, right, x):
         return node
     new_node = Node()
     if left == right:
-        new_node.value = node.value + 1
+        new_node.value = node.weight + 1
         return new_node
     mid = (left + right) // 2
     new_node.left = _update(node.left, left, mid, x)
@@ -40,7 +40,7 @@ def _query(node, left, right, ql, qr):
     if qr < left or right < ql:
         return 0
     if ql <= left and right <= qr:
-        return node.value
+        return node.weight
     mid = (left + right) // 2
     return _query(node.left, left, mid, ql, qr) + _query(node.right, mid + 1, right, ql, qr)
 
@@ -49,7 +49,7 @@ def delete(x):
         root.pop()
 
 def count(node):
-    return node.value if node else 0
+    return node.weight if node else 0
 
 def xor(left, right, x):
     now_l = root[left - 1] if left > 0 else root[0]
